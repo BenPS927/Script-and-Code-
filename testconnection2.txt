@@ -1,0 +1,11 @@
+$IPs = Get-Netneighbor | Where-Object { $_.IPAddress -like "1*" -or $_.IPAddress -like "2*" } | Select-Object IPAddress
+$results = ForEach ($IP in $IPs)  {
+	Test-Connection -ComputerName $IP -Count 1 -Quiet}
+ 
+ForEach ($result in $results) {
+	if ($result -eq 'false') {
+		Write-Host "host is unreachable"
+		} else { 
+		Write-Host "host is reachable"}
+	}
+
