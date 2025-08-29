@@ -1,0 +1,16 @@
+$IPs = Get-Netneighbor | Where-Object { $_.IPAddress -like "1*" -or $_.IPAddress -like "2*" } | Select-Object -ExpandProperty IPAddress
+$Table = foreach ($ip in $IPs) {
+	[pscustomobject]@{
+		IPAddress = $ip
+		Reachable = Test-Connection -ComputerName $ip -Count 1 -Quiet
+		}
+	}
+
+$Table | Format-Table IPAddress, Reachable -AutoSize
+ 
+ForEach ($row in $Table) {
+	if ($row.Reachable) {
+		Write-Host "Addresss $($row.IPAddress) is reachable"
+		} else { 
+		Write-Host "Address $($row.IPAddress) is unreachable"}
+	}
